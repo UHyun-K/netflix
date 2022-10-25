@@ -13,14 +13,14 @@ const Loader = styled.div`
     justify-content: center;
     align-items: center;
 `;
-const Banner = styled.div<{ bgPhoto: string }>`
+const Banner = styled.div<{ bgphoto: string }>`
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 60px;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-        url(${(props) => props.bgPhoto});
+        url(${(props) => props.bgphoto});
     background-size: cover;
 `;
 const Title = styled.h2`
@@ -46,9 +46,9 @@ const Row = styled(motion.div)`
     position: absolute;
     width: 100%;
 `;
-const Box = styled(motion.div)<{ bgPhoto: string }>`
+const Box = styled(motion.div)<{ bgphoto: string }>`
     background-color: white;
-    background-image: url(${(props) => props.bgPhoto});
+    background-image: url(${(props) => props.bgphoto});
     background-size: cover;
     background-position: center center;
     height: 200px;
@@ -62,6 +62,19 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
         transform-origin: center right;
     }
 `;
+
+const Info = styled(motion.div)`
+    padding: 10px;
+    background-color: ${(props) => props.theme.black.lighter};
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    h4 {
+        text-align: center;
+        font-size: 18px;
+    }
+`;
 const rowVariants = {
     hidden: {
         x: window.innerWidth,
@@ -73,18 +86,34 @@ const rowVariants = {
         x: -window.innerWidth,
     },
 };
-const Info = styled(motion.div)`
-    padding: 20px;
-    background-color: ${(props) => props.theme.black.lighter};
-    opacity: 0;
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    h4 {
-        text-align: center;
-        font-size: 18px;
-    }
-`;
+
+const boxVariants = {
+    normal: {
+        scale: 0,
+    },
+    hover: {
+        scale: 1.3,
+        zIndex: 99,
+        y: -50,
+        transition: {
+            delay: 0.5,
+            duration: 0.1,
+            type: "tween",
+        },
+    },
+};
+const infoVariants = {
+    hover: {
+        opacity: 1,
+    },
+    transition: {
+        delay: 0.5,
+        duration: 0.1,
+        type: "tween",
+    },
+};
+const offset = 6;
+
 function Home() {
     const { data, isLoading } = useQuery<IGetMoviesResult>(
         ["movies", "nowPlaying"],
@@ -93,38 +122,11 @@ function Home() {
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
 
-    const boxVariants = {
-        normal: {
-            scale: 0,
-        },
-        hover: {
-            scale: 1.3,
-            zIndex: 99,
-            y: -50,
-            transition: {
-                delay: 0.5,
-                duration: 0.3,
-                type: "tween",
-            },
-        },
-    };
-    const infoVariants = {
-        hover: {
-            opacity: 1,
-        },
-        transition: {
-            delay: 0.5,
-            duration: 0.3,
-            type: "tween",
-        },
-    };
-    const offset = 6;
-
     const increaseInex = () => {
         if (data) {
             if (leaving) return;
             toggleLeaving();
-            const totalMovies = data?.results.length - 1;
+            const totalMovies = data.results.length - 1;
             const maxIndex = Math.floor(totalMovies / offset) - 1;
             setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
         }
@@ -139,7 +141,7 @@ function Home() {
                 <>
                     <Banner
                         onClick={increaseInex}
-                        bgPhoto={makeImagePath(
+                        bgphoto={makeImagePath(
                             data?.results[0].backdrop_path || ""
                         )}
                     >
@@ -171,7 +173,8 @@ function Home() {
                                             whileHover="hover"
                                             initial="normal"
                                             variants={boxVariants}
-                                            bgPhoto={makeImagePath(
+                                            transition={{ type: "tween" }}
+                                            bgphoto={makeImagePath(
                                                 movie.backdrop_path,
                                                 "w500"
                                             )}
