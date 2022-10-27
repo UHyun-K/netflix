@@ -49,12 +49,10 @@ const Row = styled(motion.div)`
     width: 100%;
 `;
 const Box = styled(motion.div)<{ bgphoto: string }>`
-    background-color: white;
     background-image: url(${(props) => props.bgphoto});
     background-size: cover;
     background-position: center center;
     height: 200px;
-    color: red;
     font-size: 60px;
     position: relative;
     cursor: pointer;
@@ -131,7 +129,7 @@ const rowVariants = {
 
 const boxVariants = {
     normal: {
-        scale: 0,
+        scale: 1,
     },
     hover: {
         scale: 1.3,
