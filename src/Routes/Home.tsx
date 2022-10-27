@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMatch, PathMatch } from "react-router-dom";
 const Wrapper = styled.div`
     background: black;
 `;
@@ -55,6 +57,7 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
     color: red;
     font-size: 60px;
     position: relative;
+    cursor: pointer;
     &:first-child {
         transform-origin: center left;
     }
@@ -115,6 +118,9 @@ const infoVariants = {
 const offset = 6;
 
 function Home() {
+    const navigate = useNavigate();
+    const bigMovieMatch: PathMatch<string> | null =
+        useMatch("/movies/:movieId");
     const { data, isLoading } = useQuery<IGetMoviesResult>(
         ["movies", "nowPlaying"],
         getMovies
@@ -132,6 +138,9 @@ function Home() {
         }
     };
     const toggleLeaving = () => setLeaving((prev) => !prev);
+    const onBoxClicked = (movieId: number) => {
+        navigate(`/movies/${movieId}`);
+    };
     console.log(data, isLoading);
     return (
         <Wrapper>
@@ -169,10 +178,14 @@ function Home() {
                                     )
                                     .map((movie) => (
                                         <Box
+                                            layoutId={movie.id + ""}
                                             key={movie.id}
                                             whileHover="hover"
                                             initial="normal"
                                             variants={boxVariants}
+                                            onClick={() =>
+                                                onBoxClicked(movie.id)
+                                            }
                                             transition={{ type: "tween" }}
                                             bgphoto={makeImagePath(
                                                 movie.backdrop_path,
@@ -187,6 +200,23 @@ function Home() {
                             </Row>
                         </AnimatePresence>
                     </Slider>
+                    <AnimatePresence>
+                        {bigMovieMatch ? (
+                            <motion.div
+                                layoutId={bigMovieMatch.params.movieId}
+                                style={{
+                                    position: "absolute",
+                                    width: "40vw",
+                                    height: "80vh",
+                                    backgroundColor: "red",
+                                    top: 50,
+                                    left: 0,
+                                    right: 0,
+                                    margin: "0 auto",
+                                }}
+                            ></motion.div>
+                        ) : null}
+                    </AnimatePresence>
                 </>
             )}
         </Wrapper>
