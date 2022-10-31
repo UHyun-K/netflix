@@ -9,10 +9,11 @@ function App() {
         <Router>
             <Header />
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="movies/:moveId" element={<Home />} />
-                <Route path="/tv" element={<Tv />}></Route>
-                <Route path="/search" element={<Search />}></Route>
+                <Route path="/tv" element={<Tv />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/search/:movieID" element={<Search />} />
+
+                <Route path="/*" element={<Home />} />
             </Routes>
         </Router>
     );

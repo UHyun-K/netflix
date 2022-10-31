@@ -86,7 +86,7 @@ const Overlay = styled(motion.div)`
 `;
 const BigMovie = styled(motion.div)<{ scrolly: number }>`
     position: absolute;
-    width: 40vw;
+    width: 50vw;
     top: ${(props) => props.scrolly + 100}px;
     height: 80vh;
     left: 0;
@@ -96,7 +96,7 @@ const BigMovie = styled(motion.div)<{ scrolly: number }>`
     overflow: hidden;
     background-color: ${(props) => props.theme.black.lighter};
 `;
-const BigCover = styled.img`
+const BigCover = styled.div`
     width: 100%;
     background-size: cover;
     background-position: center center;

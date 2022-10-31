@@ -25,4 +25,29 @@ export function getMovies() {
     );
 }
 
-export default getMovies;
+export interface IResults {
+    adult: boolean;
+    backdrop_path: string;
+    genre_ids: number[];
+    id: number;
+    media_type: string;
+    original_language: string;
+    original_title: string;
+    overview: string;
+    popularity: number;
+    poster_path: string;
+    release_date: string;
+    title: string;
+    video: boolean;
+    vote_average: number;
+    vote_count: number;
+}
+export interface ISearchResults {
+    page: number;
+    results: IResults[];
+}
+export function multiSearch(keyword: string) {
+    return fetch(
+        `${BASE_PATH}/search/multi?api_key=${API_KEY}&query=${keyword}`
+    ).then((response) => response.json());
+}

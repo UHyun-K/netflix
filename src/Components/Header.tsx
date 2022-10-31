@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { motion, useAnimation, useScroll } from "framer-motion";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
     display: flex;
@@ -46,7 +47,7 @@ const Item = styled.li`
         color: ${(props) => props.theme.white.lighter};
     }
 `;
-const Search = styled.span`
+const Search = styled.form`
     color: white;
     display: flex;
     align-items: center;
@@ -98,6 +99,10 @@ const navVariants = {
     },
 };
 
+interface IForm {
+    keyword: string;
+}
+
 function Header() {
     const [searchOpen, setSearchOpen] = useState(false);
     const homeMatch = useMatch("/");
@@ -113,6 +118,7 @@ function Header() {
             });
         } else {
             inputAnimation.start({ scaleX: 1 });
+            setFocus("keyword");
         }
         setSearchOpen((prev) => !prev);
     };
@@ -125,7 +131,12 @@ function Header() {
             }
         });
     }, [scrollY]);
-
+    const navigate = useNavigate();
+    const { register, handleSubmit, setFocus } = useForm<IForm>();
+    const onValid = (data: IForm) => {
+        console.log(data);
+        navigate(`/search?keyword=${data.keyword}`);
+    };
     return (
         <Nav variants={navVariants} animate={navAnimation} initial={"top"}>
             <Col>
@@ -156,9 +167,10 @@ function Header() {
                 </Items>
             </Col>
             <Col>
-                <Search onClick={toggleSearch}>
+                <Search onSubmit={handleSubmit(onValid)}>
                     <motion.svg
-                        animate={{ x: searchOpen ? -200 : 0 }}
+                        onClick={toggleSearch}
+                        animate={{ x: searchOpen ? -210 : 0 }}
                         transition={{ type: "linear" }}
                         fill="currentColor"
                         viewBox="0 0 20 20"
@@ -171,10 +183,14 @@ function Header() {
                         ></path>
                     </motion.svg>
                     <Input
+                        {...register("keyword", {
+                            required: true,
+                            minLength: 2,
+                        })}
                         initial={{ scaleX: 0 }}
                         transition={{ type: "linear" }}
                         animate={inputAnimation}
-                        placeholder="serach for movie"
+                        placeholder="search for movie"
                     />
                 </Search>
             </Col>
