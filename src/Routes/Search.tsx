@@ -42,19 +42,19 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
 
 function Search() {
     const location = useLocation();
-    const navigate = useNavigate();
-    console.log(location);
     const keyword = new URLSearchParams(location.search).get("keyword");
-    const newKeyword = keyword!.replace(/^[a-z]/, (char) => char.toUpperCase());
+
     const { data, isLoading } = useQuery<ISearchResults>(
         ["search", "results"],
-        () => multiSearch(keyword!)
+        () => multiSearch(keyword!, 1)
     );
+    const newKeyword = keyword!.replace(/^[a-z]/, (char) => char.toUpperCase());
+    console.log(data);
 
     return (
         <Wrapper>
             {isLoading ? (
-                <Loader>"Loading..."</Loader>
+                <Loader>Loading...</Loader>
             ) : (
                 <>
                     <SearchedTitle> {newKeyword}</SearchedTitle>
@@ -62,7 +62,7 @@ function Search() {
                         {data?.results.map((movie) => (
                             <Box
                                 key={movie.id}
-                                bgphoto={makeImagePath(movie.backdrop_path)}
+                                bgphoto={makeImagePath(movie.poster_path)}
                             ></Box>
                         ))}
                     </Row>
