@@ -136,7 +136,7 @@ const rowVariants = {
         x: clickPrev ? window.innerWidth : -window.innerWidth,
     }),
 };
-const boxVariants = {
+/* const boxVariants = {
     normal: {
         scale: 1,
     },
@@ -150,7 +150,7 @@ const boxVariants = {
             type: "tween",
         },
     },
-};
+}; */
 const infoVariants = {
     hover: {
         opacity: 1,
@@ -238,7 +238,7 @@ function Slider({ type }: { type: Types }) {
                         <AnimatePresence
                             initial={false}
                             onExitComplete={toggleLeaving}
-                            custom={{ clickPrev }}
+                            custom={clickPrev}
                         >
                             <Row
                                 variants={rowVariants}
@@ -247,7 +247,7 @@ function Slider({ type }: { type: Types }) {
                                 exit="exit"
                                 key={index}
                                 transition={{ type: "tween", duration: 1 }}
-                                custom={{ clickPrev }}
+                                custom={clickPrev}
                             >
                                 {data?.results
                                     .slice(
@@ -259,8 +259,9 @@ function Slider({ type }: { type: Types }) {
                                             layoutId={movie.id + ""}
                                             key={movie.id}
                                             whileHover="hover"
+                                            /*
                                             initial="normal"
-                                            variants={boxVariants}
+                                            variants={boxVariants} */
                                             onClick={() =>
                                                 onBoxClicked(movie.id)
                                             }
