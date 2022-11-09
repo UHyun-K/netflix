@@ -1,4 +1,3 @@
-import { RiNumber1 } from "react-icons/ri";
 import styled from "styled-components";
 import { makeImagePath, Types } from "../utils";
 import { getMovies, IGetMoviesResult } from "../api";
@@ -6,13 +5,14 @@ import { useQuery } from "react-query";
 import { useState } from "react";
 import { useNavigate, useMatch, PathMatch } from "react-router-dom";
 import { motion, AnimatePresence, useScroll } from "framer-motion";
+
 const SliderWrapper = styled.div`
     position: relative;
     top: -75px;
     height: 210px;
 `;
 
-const Category = styled.div`
+const Category = styled(motion.div)`
     padding-left: 60px;
     padding-bottom: 10px;
     display: flex;
@@ -23,8 +23,6 @@ const Category = styled.div`
     font-weight: bold;
     &:hover {
         svg {
-            fill: #4f9aa4;
-            transition: 0.5s;
         }
     }
     svg {
@@ -78,8 +76,7 @@ const BtnSlider = styled.div<{ isNext: boolean }>`
     right: ${(props) => (props.isNext ? 0 : null)};
     left: ${(props) => (props.isNext ? null : 0)};
     display: flex;
-    justify-content: center;
-    align-items: center;
+    place-items: center;
     svg {
         width: 50px;
         height: 50px;
@@ -162,6 +159,14 @@ const infoVariants = {
     },
 };
 
+const svgVariants = {
+    hover: {
+        x: 15,
+        transition: {
+            duration: 0.3,
+        },
+    },
+};
 const offset = 5;
 
 function Slider({ type }: { type: Types }) {
@@ -194,8 +199,9 @@ function Slider({ type }: { type: Types }) {
     const decreaseInex = () => {
         if (data) {
             if (leaving) return;
-            toggleLeaving();
             setClickPrev(true);
+
+            toggleLeaving();
             const totalMovies = data.results.length;
             const maxIndex = Math.floor(totalMovies / offset) - 1;
             setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
@@ -204,8 +210,9 @@ function Slider({ type }: { type: Types }) {
     const increaseInex = () => {
         if (data) {
             if (leaving) return;
-            toggleLeaving();
             setClickPrev(false);
+
+            toggleLeaving();
             const totalMovies = data.results.length;
             const maxIndex = Math.floor(totalMovies / offset) - 1;
             setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
@@ -219,7 +226,7 @@ function Slider({ type }: { type: Types }) {
             ) : (
                 <>
                     <SliderWrapper>
-                        <Category>
+                        <Category whileHover="hover">
                             {type === Types.popular
                                 ? "popular"
                                 : type === Types.top_rated
@@ -227,13 +234,14 @@ function Slider({ type }: { type: Types }) {
                                 : type === Types.upcoming
                                 ? "upcoming"
                                 : ""}
-                            <svg
+                            <motion.svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 384 512"
                                 fill="#e5e5e5"
+                                variants={svgVariants}
                             >
                                 <path d="M342.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L274.7 256 105.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-                            </svg>
+                            </motion.svg>
                         </Category>
                         <AnimatePresence
                             initial={false}
