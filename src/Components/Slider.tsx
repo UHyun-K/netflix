@@ -246,7 +246,7 @@ function Slider({ type }: { type: Types }) {
                         <AnimatePresence
                             initial={false}
                             onExitComplete={toggleLeaving}
-                            custom={clickPrev}
+                            custom={{ clickPrev }}
                         >
                             <Row
                                 variants={rowVariants}
@@ -255,7 +255,7 @@ function Slider({ type }: { type: Types }) {
                                 exit="exit"
                                 key={index}
                                 transition={{ type: "tween", duration: 1 }}
-                                custom={clickPrev}
+                                custom={{ clickPrev }}
                             >
                                 {data?.results
                                     .slice(
@@ -264,8 +264,8 @@ function Slider({ type }: { type: Types }) {
                                     )
                                     .map((movie) => (
                                         <Box
-                                            layoutId={movie.id + ""}
-                                            key={movie.id}
+                                            layoutId={type + movie.id}
+                                            key={type + movie.id}
                                             whileHover="hover"
                                             /*
                                             initial="normal"
@@ -315,7 +315,9 @@ function Slider({ type }: { type: Types }) {
                                     animate={{ opacity: "1" }}
                                 />
                                 <BigMovie
-                                    layoutId={bigMovieMatch.params.movieId}
+                                    layoutId={
+                                        type + bigMovieMatch.params.movieId
+                                    }
                                     scrolly={scrollY.get()}
                                 >
                                     {clickedMovie && (
