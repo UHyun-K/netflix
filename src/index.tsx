@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
+import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { theme } from "./theme";
 
@@ -80,12 +81,14 @@ const root = ReactDOM.createRoot(
 );
 root.render(
     <React.StrictMode>
-        <QueryClientProvider client={client}>
-            <ThemeProvider theme={theme}>
-                <GlobalStyle />
-                <App />
-            </ThemeProvider>
-        </QueryClientProvider>
+        <RecoilRoot>
+            <QueryClientProvider client={client}>
+                <ThemeProvider theme={theme}>
+                    <GlobalStyle />
+                    <App />
+                </ThemeProvider>
+            </QueryClientProvider>
+        </RecoilRoot>
     </React.StrictMode>
 );
 
