@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "https://uhyun-k.github.io/nextflix/static/js/main.dacd8477.js",
+    "main.js": "https://uhyun-k.github.io/nextflix/static/js/main.99ae5a78.js",
     "static/js/787.72790172.chunk.js": "https://uhyun-k.github.io/nextflix/static/js/787.72790172.chunk.js",
     "index.html": "https://uhyun-k.github.io/nextflix/index.html",
-    "main.dacd8477.js.map": "https://uhyun-k.github.io/nextflix/static/js/main.dacd8477.js.map",
+    "main.99ae5a78.js.map": "https://uhyun-k.github.io/nextflix/static/js/main.99ae5a78.js.map",
     "787.72790172.chunk.js.map": "https://uhyun-k.github.io/nextflix/static/js/787.72790172.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.dacd8477.js"
+    "static/js/main.99ae5a78.js"
   ]
 }
