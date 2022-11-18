@@ -50,7 +50,7 @@ function Home() {
                             data?.results[0].backdrop_path || ""
                         )}
                     >
-                        <Title>{data?.results[0].original_title}</Title>
+                        <Title>{data?.results[0].title}</Title>
                         <Overview>{data?.results[0].overview}</Overview>
                     </Banner>
                     <>

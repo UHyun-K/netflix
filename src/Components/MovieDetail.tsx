@@ -72,7 +72,9 @@ function MovieDetail({ layoutId, back, clickedMovie, scrolly }: IMovieDetail) {
           )`,
                             }}
                         />
-                        <BigTitle>{clickedMovie.original_title}</BigTitle>
+                        <BigTitle>
+                            {clickedMovie.title || clickedMovie.name}
+                        </BigTitle>
                         <BigOverview>{clickedMovie.overview}</BigOverview>
                     </>
                 )}

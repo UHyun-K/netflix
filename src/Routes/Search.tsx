@@ -11,6 +11,7 @@ import { multiSearch } from "../api";
 import { ISearchResults } from "../api";
 import { makeImagePath } from "../utils";
 import MovieDetail from "../Components/MovieDetail";
+import { useEffect } from "react";
 const Wrapper = styled.div`
     position: relative;
     top: 100px;
@@ -42,6 +43,7 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
     height: 200px;
     font-size: 60px;
     position: relative;
+    cursor: pointer;
 `;
 
 function Search() {
@@ -50,10 +52,14 @@ function Search() {
     const { scrollY } = useScroll();
 
     const keyword = new URLSearchParams(location.search).get("keyword");
-    const { data, isLoading } = useQuery<ISearchResults>(
+    const { data, isLoading, refetch } = useQuery<ISearchResults>(
         ["search", "results"],
         () => multiSearch(keyword!, 1)
     );
+    useEffect(() => {
+        refetch();
+    }, [keyword]);
+
     const newKeyword = keyword!.replace(/^[a-z]/, (char) => char.toUpperCase());
 
     const bigMovieMatch: PathMatch<string> | null =
@@ -79,15 +85,30 @@ function Search() {
                         {" "}
                         {newKeyword}에 대한 검색결과{" "}
                     </SearchedTitle>
-                    <Row>
-                        {data?.results.map((movie) => (
-                            <Box
-                                key={movie.id}
-                                bgphoto={makeImagePath(movie.backdrop_path)}
-                                onClick={() => onBoxClicked(movie.id)}
-                            ></Box>
-                        ))}
-                    </Row>
+                    {data?.results.length === 0 ? (
+                        <Loader>
+                            검색 결과가 없습니다. 다른 검색어를 시도해보세요.
+                        </Loader>
+                    ) : (
+                        <Row>
+                            {data?.results.map((movie) => (
+                                <Box
+                                    key={movie.id}
+                                    bgphoto={
+                                        movie.backdrop_path ||
+                                        movie.poster_path !==
+                                            (null || undefined)
+                                            ? makeImagePath(
+                                                  movie.backdrop_path ||
+                                                      movie.poster_path
+                                              )
+                                            : "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"
+                                    }
+                                    onClick={() => onBoxClicked(movie.id)}
+                                ></Box>
+                            ))}
+                        </Row>
+                    )}
 
                     <AnimatePresence>
                         {clickedMovie ? (

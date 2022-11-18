@@ -240,7 +240,7 @@ function Slider({ type }: { type: Types }) {
                                             )}
                                         >
                                             <Info variants={infoVariants}>
-                                                <h4>{movie.original_title}</h4>
+                                                <h4>{movie.title}</h4>
                                             </Info>
                                         </Box>
                                     ))}
