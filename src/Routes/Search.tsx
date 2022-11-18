@@ -1,12 +1,16 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
-import { useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
+import {
+    useNavigate,
+    useLocation,
+    useMatch,
+    PathMatch,
+} from "react-router-dom";
 import { useQuery } from "react-query";
 import { multiSearch } from "../api";
 import { ISearchResults } from "../api";
 import { makeImagePath } from "../utils";
-import { useEffect } from "react";
-
+import MovieDetail from "../Components/MovieDetail";
 const Wrapper = styled.div`
     position: relative;
     top: 100px;
@@ -42,31 +46,60 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
 
 function Search() {
     const location = useLocation();
-    const keyword = new URLSearchParams(location.search).get("keyword");
+    const navigate = useNavigate();
+    const { scrollY } = useScroll();
 
+    const keyword = new URLSearchParams(location.search).get("keyword");
     const { data, isLoading } = useQuery<ISearchResults>(
         ["search", "results"],
         () => multiSearch(keyword!, 1)
     );
     const newKeyword = keyword!.replace(/^[a-z]/, (char) => char.toUpperCase());
-    console.log(data);
+
+    const bigMovieMatch: PathMatch<string> | null =
+        useMatch(`/search/:movieId`);
+
+    const onBoxClicked = (movieId: number) => {
+        navigate(`/search/${movieId}?keyword=${keyword}`);
+    };
+
+    const clickedMovie =
+        bigMovieMatch?.params.movieId &&
+        data?.results.find(
+            (movie) => movie.id + "" === bigMovieMatch.params.movieId
+        );
 
     return (
         <Wrapper>
             {isLoading ? (
                 <Loader>Loading...</Loader>
             ) : (
-                <>
-                    <SearchedTitle> {newKeyword}</SearchedTitle>
+                <div>
+                    <SearchedTitle>
+                        {" "}
+                        {newKeyword}에 대한 검색결과{" "}
+                    </SearchedTitle>
                     <Row>
                         {data?.results.map((movie) => (
                             <Box
                                 key={movie.id}
-                                bgphoto={makeImagePath(movie.poster_path)}
+                                bgphoto={makeImagePath(movie.backdrop_path)}
+                                onClick={() => onBoxClicked(movie.id)}
                             ></Box>
                         ))}
                     </Row>
-                </>
+
+                    <AnimatePresence>
+                        {clickedMovie ? (
+                            <MovieDetail
+                                layoutId={bigMovieMatch.params.movieId + ""}
+                                clickedMovie={clickedMovie}
+                                scrolly={scrollY.get()}
+                                back={`/search?keyword=${keyword}`}
+                            />
+                        ) : null}
+                    </AnimatePresence>
+                </div>
             )}
         </Wrapper>
     );
