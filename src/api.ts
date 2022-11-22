@@ -1,6 +1,7 @@
 import { Types } from "./utils";
 
 const BASE_PATH = "https://api.themoviedb.org/3";
+const LANGUAGE = "ko-KR";
 const API = process.env.REACT_APP_API_KEY;
 
 export interface IMovie {
@@ -24,7 +25,13 @@ export interface IGetMoviesResult {
 
 export async function getMovies(type: Types) {
     return await fetch(
-        `${BASE_PATH}/movie/${type}?api_key=${API}&page=1&region=kr`
+        `${BASE_PATH}/movie/${type}?api_key=${API}&language=${LANGUAGE}&page=1&region=kr`
+    ).then((response) => response.json());
+}
+
+export async function getTvs(type: Types) {
+    return await fetch(
+        `${BASE_PATH}/tv/${type}?api_key=${API}&language=${LANGUAGE}&page=1&region=kr`
     ).then((response) => response.json());
 }
 
@@ -51,6 +58,6 @@ export interface ISearchResults {
 }
 export async function multiSearch(keyword: string, page: number) {
     return await fetch(
-        `${BASE_PATH}/search/multi?api_key=${API}&query=${keyword}&page=${page}&include_adult=false`
+        `${BASE_PATH}/search/multi?api_key=${API}&query=${keyword}}&language=${LANGUAGE}&page=${page}&include_adult=false`
     ).then((response) => response.json());
 }

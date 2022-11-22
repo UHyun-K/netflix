@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { makeImagePath, Types } from "../utils";
-import { getMovies, IGetMoviesResult } from "../api";
+import { getMovies, getTvs, IGetMoviesResult } from "../api";
 import { useQuery } from "react-query";
 import { useState } from "react";
 import { useNavigate, useMatch, PathMatch } from "react-router-dom";
@@ -59,11 +59,11 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
 `;
 const Info = styled(motion.div)`
     padding: 10px;
-    background-color: ${(props) => props.theme.black.lighter};
     opacity: 0;
     position: absolute;
     width: 100%;
     bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
     h4 {
         text-align: center;
         font-size: 18px;
@@ -95,21 +95,21 @@ const rowVariants = {
         x: clickPrev ? window.innerWidth : -window.innerWidth,
     }),
 };
-/* const boxVariants = {
+const boxVariants = {
     normal: {
         scale: 1,
     },
     hover: {
         scale: 1.3,
         zIndex: 99,
-        y: -50,
+        y: -30,
         transition: {
-            delay: 0.5,
-            duration: 0.1,
+            delay: 0.2,
+            duration: 0.2,
             type: "tween",
         },
     },
-}; */
+};
 const infoVariants = {
     hover: {
         opacity: 1,
@@ -131,7 +131,7 @@ const svgVariants = {
 };
 const offset = 5;
 
-function Slider({ type }: { type: Types }) {
+export function Slider({ type }: { type: Types }) {
     const navigate = useNavigate();
     const { scrollY } = useScroll();
     const { data, isLoading } = useQuery<IGetMoviesResult>(
@@ -188,11 +188,11 @@ function Slider({ type }: { type: Types }) {
                     <SliderWrapper>
                         <Category whileHover="hover">
                             {type === Types.popular
-                                ? "popular"
+                                ? "지금 인기 있는 영화"
                                 : type === Types.top_rated
-                                ? "top rated"
+                                ? "평가가 좋은 영화"
                                 : type === Types.upcoming
-                                ? "upcoming"
+                                ? "새로 개봉한 영화"
                                 : ""}
                             <motion.svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -227,13 +227,11 @@ function Slider({ type }: { type: Types }) {
                                             layoutId={type + movie.id}
                                             key={type + movie.id}
                                             whileHover="hover"
-                                            /*
                                             initial="normal"
-                                            variants={boxVariants} */
+                                            variants={boxVariants}
                                             onClick={() =>
                                                 onBoxClicked(movie.id)
                                             }
-                                            transition={{ type: "tween" }}
                                             bgphoto={makeImagePath(
                                                 movie.backdrop_path,
                                                 "w500"
@@ -273,6 +271,154 @@ function Slider({ type }: { type: Types }) {
                                 clickedMovie={clickedMovie}
                                 scrolly={scrollY.get()}
                                 back={`../`}
+                            />
+                        ) : null}
+                    </AnimatePresence>
+                </>
+            )}
+        </div>
+    );
+}
+
+export function SliderTv({ type }: { type: Types }) {
+    const navigate = useNavigate();
+    const { scrollY } = useScroll();
+    const { data, isLoading } = useQuery<IGetMoviesResult>(["tv", type], () =>
+        getTvs(type)
+    );
+    console.log(data);
+
+    const bigMovieMatch: PathMatch<string> | null = useMatch("/tv/:movieId");
+
+    const paramId = bigMovieMatch?.params.movieId;
+    const clickedMovie =
+        paramId && data?.results.find((movie) => movie.id + "" === paramId);
+
+    const [index, setIndex] = useState(0);
+    const [leaving, setLeaving] = useState(false);
+    const [clickPrev, setClickPrev] = useState(false);
+    const onBoxClicked = (movieId: number) => {
+        navigate(`/tv/${movieId}`);
+    };
+    const toggleLeaving = () => setLeaving((prev) => !prev);
+
+    const decreaseInex = () => {
+        if (data) {
+            if (leaving) return;
+            setClickPrev(true);
+
+            toggleLeaving();
+            const totalMovies = data.results.length;
+            const maxIndex = Math.floor(totalMovies / offset) - 1;
+            setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+        }
+    };
+    const increaseInex = () => {
+        if (data) {
+            if (leaving) return;
+            setClickPrev(false);
+
+            toggleLeaving();
+            const totalMovies = data.results.length;
+            const maxIndex = Math.floor(totalMovies / offset) - 1;
+            setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+        }
+    };
+
+    return (
+        <div>
+            {isLoading ? (
+                <h2>Loading...</h2>
+            ) : (
+                <>
+                    <SliderWrapper>
+                        <Category whileHover="hover">
+                            {type === Types.popular
+                                ? "지금 인기 있는 쇼"
+                                : type === Types.top_rated
+                                ? "평가가 좋은 쇼"
+                                : type === Types.on_the_air
+                                ? "방영중인 쇼"
+                                : ""}
+                            <motion.svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 384 512"
+                                fill="#e5e5e5"
+                                variants={svgVariants}
+                            >
+                                <path d="M342.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L274.7 256 105.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                            </motion.svg>
+                        </Category>
+                        <AnimatePresence
+                            initial={false}
+                            onExitComplete={toggleLeaving}
+                            custom={clickPrev}
+                        >
+                            <Row
+                                variants={rowVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                key={index}
+                                transition={{ type: "tween", duration: 1 }}
+                                custom={clickPrev}
+                            >
+                                {data?.results
+                                    .slice(
+                                        offset * index,
+                                        offset * index + offset
+                                    )
+                                    .map((movie) => (
+                                        <Box
+                                            layoutId={type + movie.id}
+                                            key={type + movie.id}
+                                            whileHover="hover"
+                                            initial="normal"
+                                            variants={boxVariants}
+                                            onClick={() =>
+                                                onBoxClicked(movie.id)
+                                            }
+                                            bgphoto={makeImagePath(
+                                                movie.backdrop_path,
+                                                "w500"
+                                            )}
+                                        >
+                                            <Info variants={infoVariants}>
+                                                <h4>
+                                                    {movie.title || movie.name}
+                                                </h4>
+                                            </Info>
+                                        </Box>
+                                    ))}
+                            </Row>
+                        </AnimatePresence>
+                        <BtnSlider isNext={false} onClick={decreaseInex}>
+                            <motion.svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 256 512"
+                                fill="currentColor"
+                            >
+                                <path d="M137.4 406.6l-128-127.1C3.125 272.4 0 264.2 0 255.1s3.125-16.38 9.375-22.63l128-127.1c9.156-9.156 22.91-11.9 34.88-6.943S192 115.1 192 128v255.1c0 12.94-7.781 24.62-19.75 29.58S146.5 415.8 137.4 406.6z" />
+                            </motion.svg>
+                        </BtnSlider>
+                        <BtnSlider isNext={true} onClick={increaseInex}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 256 512"
+                                fill="currentColor"
+                            >
+                                <path d="M118.6 105.4l128 127.1C252.9 239.6 256 247.8 256 255.1s-3.125 16.38-9.375 22.63l-128 127.1c-9.156 9.156-22.91 11.9-34.88 6.943S64 396.9 64 383.1V128c0-12.94 7.781-24.62 19.75-29.58S109.5 96.23 118.6 105.4z" />
+                            </svg>
+                        </BtnSlider>
+                    </SliderWrapper>
+
+                    <AnimatePresence>
+                        {clickedMovie ? (
+                            <MovieDetail
+                                layoutId={type + paramId}
+                                clickedMovie={clickedMovie}
+                                scrolly={scrollY.get()}
+                                back={`/tv`}
                             />
                         ) : null}
                     </AnimatePresence>

@@ -3,7 +3,7 @@ import { getMovies, IGetMoviesResult } from "../api";
 import styled from "styled-components";
 import { makeImagePath, Types } from "../utils";
 
-import Slider from "../Components/Slider";
+import { Slider } from "../Components/Slider";
 const Wrapper = styled.div`
     background: black;
 `;
@@ -24,13 +24,19 @@ const Banner = styled.div<{ bgphoto: string }>`
     background-size: cover;
 `;
 const Title = styled.h2`
-    font-size: 68px;
-    margin-bottom: 10px;
+    font-size: 40px;
+    margin-bottom: 30px;
 `;
 
 const Overview = styled.p`
-    font-size: 28px;
+    line-height: 28px;
+    font-size: 20px;
     width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
 `;
 
 function Home() {

@@ -75,7 +75,11 @@ function MovieDetail({ layoutId, back, clickedMovie, scrolly }: IMovieDetail) {
                         <BigTitle>
                             {clickedMovie.title || clickedMovie.name}
                         </BigTitle>
-                        <BigOverview>{clickedMovie.overview}</BigOverview>
+                        <BigOverview>
+                            {clickedMovie.overview === ""
+                                ? "정보 없음"
+                                : clickedMovie.overview}
+                        </BigOverview>
                     </>
                 )}
             </BigMovie>

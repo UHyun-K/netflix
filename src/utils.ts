@@ -5,4 +5,5 @@ export enum Types {
     "popular" = "popular",
     "top_rated" = "top_rated",
     "upcoming" = "upcoming",
+    "on_the_air" = "on_the_air",
 }
