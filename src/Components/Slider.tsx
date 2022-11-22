@@ -286,7 +286,6 @@ export function SliderTv({ type }: { type: Types }) {
     const { data, isLoading } = useQuery<IGetMoviesResult>(["tv", type], () =>
         getTvs(type)
     );
-    console.log(data);
 
     const bigMovieMatch: PathMatch<string> | null = useMatch("/tv/:movieId");
 

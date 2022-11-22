@@ -158,7 +158,7 @@ function Header() {
                 <Items>
                     <Item>
                         <Link to="/">
-                            Home
+                            홈
                             {homeMatch || movieMatch ? (
                                 <Circle layoutId="circle" />
                             ) : null}
@@ -166,7 +166,7 @@ function Header() {
                     </Item>
                     <Item>
                         <Link to="tv">
-                            Tv Shows
+                            TV 프로그램
                             {tvMatch && <Circle layoutId="circle" />}
                         </Link>
                     </Item>

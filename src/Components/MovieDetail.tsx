@@ -30,19 +30,29 @@ const BigCover = styled.div`
     background-size: cover;
     background-position: center center;
     height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        width: 20%;
+        border-radius: 10%;
+    }
 `;
 const BigTitle = styled.h3`
     color: ${(props) => props.theme.white.lighter};
     padding: 10px;
-    font-size: 46px;
+    font-size: 35px;
     position: relative;
-    top: -80px;
+    top: -65px;
+    text-align: center;
 `;
 const BigOverview = styled.p`
     padding: 20px;
     position: relative;
-    top: -80px;
+    top: -55px;
+    line-height: 23px;
     color: ${(props) => props.theme.white.lighter};
+    word-spacing: 3px;
 `;
 interface IMovieDetail {
     layoutId: string;
@@ -66,12 +76,16 @@ function MovieDetail({ layoutId, back, clickedMovie, scrolly }: IMovieDetail) {
                     <>
                         <BigCover
                             style={{
-                                backgroundImage: `linear-gradient( to top , black, transparent ), 
+                                backgroundImage: `linear-gradient( to top , #181818, rgba(0,0,0,0.5) ), 
           url(
             ${makeImagePath(clickedMovie.backdrop_path)}
           )`,
                             }}
-                        />
+                        >
+                            <img
+                                src={makeImagePath(clickedMovie.poster_path)}
+                            ></img>
+                        </BigCover>
                         <BigTitle>
                             {clickedMovie.title || clickedMovie.name}
                         </BigTitle>
